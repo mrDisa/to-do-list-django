@@ -1,2 +1,82 @@
 {% extends 'base.html' %}
-{% block title %} Main Page{% endblock %}
+{% block title %} Список задач{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <form action="{% url 'add' %}" method="post" class="mb-4">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" 
+                                       name="title" 
+                                       class="form-control" 
+                                       placeholder="Введите новую задачу..." 
+                                       required>
+                                <button type="submit" class="btn" style="background-color: #171A24; color:white">
+                                    Добавить
+                                </button>
+                            </div>
+                        </form>
+
+                        <div id="tasksList">
+
+                            {% for task in tasks %}
+                            {% if task.status %}
+                            <div class="task-item card mb-2 completed">
+                            {% else %}
+                            <div class="task-item card mb-2">
+                            {% endif %}
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        
+                                        <div class="col-md-6">
+                                            <h5 class="card-title mb-1">
+                                                {{ task.title }}
+                                            </h5>
+                                            <small class="text-muted">{{ task.date }}</small>
+                                        </div>
+                                        <div class="col-md-4">
+                                            {% if not task.status %}
+                                            <span class="badge bg-warning">
+                                                    Не Выполнено
+                                            </span>
+                                            {% else %}
+                                            <span class="badge bg-primary">
+                                                    Выполнено
+                                            </span>
+                                            {% endif %}
+                                            
+                                        </div>
+                                        
+                                        <div class="col-md-2 text-end gap-2">
+                                            {% if not task.status %}
+                                            <form action="{% url 'complete' task.id %}" method='post'>
+                                            <button class="btn btn-sm btn-primary ms-1 mb-1">
+                                                {% csrf_token %}
+                                                Выполнить
+                                            </button>
+                                            {% else %}
+                                            {% endif %}
+                                            </form>
+                                            <form action="{% url 'delete' task.id %}" method='post'>
+                                            <button method="post" class="btn btn-sm btn-danger " >
+                                                {% csrf_token %}
+                                                Удалить
+                                            </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
