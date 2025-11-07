@@ -20,6 +20,16 @@ def delete(request, id):
 def add(request):
     task = Task()
     task.title = request.POST['title']
+    task.description = request.POST['description']
+    task.save()
+
+    return redirect('list')
+
+@require_POST
+def edit(request):
+    task = get_object_or_404(Task, id=id)
+    task.title = Task.title
+    task.description = Task.description
     task.save()
 
     return redirect('list')
